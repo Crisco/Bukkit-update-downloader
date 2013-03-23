@@ -1,0 +1,27 @@
+#!/usr/bin/python
+import sys
+import urllib
+from os import getcwd
+
+
+def Progress(current, blockSize, total):
+	percent = int((current*blockSize*100)/total)
+	sys.stdout.write("\rPercent Done: %2d%%" % percent)
+	sys.stdout.flush()
+
+def downloadFile(type):
+	print "Downloading \"craftbukkit-"+type+".jar\" to " + getcwd()
+	urllib.urlretrieve("http://dl.bukkit.org/latest-"+type+"/craftbukkit-"+type+".jar", "craftbukkit-"+type+".jar", reporthook=Progress)
+	print "\rDone!"
+
+if len(sys.argv)<2:
+	print "USAGE: update-bukkit <rel,beta,dev>"
+elif sys.argv[1]=="rel":
+	print "Downloading \"craftbukkit.jar\" to " + getcwd()
+	urllib.urlretrieve("http://dl.bukkit.org/latest-rb/craftbukkit.jar", "craftbukkit.jar", reporthook=Progress)
+	print "\rDone!"
+elif sys.argv[1]=="dev" or sys.argv[1]=="beta":
+	downloadFile(str(sys.argv[1]))
+else:
+	print "USAGE: update-bukkit <rel,beta,dev>"
+
