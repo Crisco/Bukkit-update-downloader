@@ -23,8 +23,7 @@ if len(sys.argv)<2:
 	print("USAGE: update-bukkit <rel,beta,dev>")
 elif sys.argv[1]=="rel": #since the release bukkit format is very different from the other two I just hardcoded it
 	print("Downloading \"craftbukkit.jar\" to " + getcwd())
-#	urlretrieve("http://dl.bukkit.org/latest-rb/craftbukkit.jar", "craftbukkit.jar", reporthook=Progress)
-	urlretrieve("https://dl.dropbox.com/u/5135448/screenshot.png", "test.png", reporthook=Progress)
+	urlretrieve("http://dl.bukkit.org/latest-rb/craftbukkit.jar", "craftbukkit.jar", reporthook=Progress)
 	print("\nDone!")
 elif sys.argv[1]=="dev" or sys.argv[1]=="beta":
 	downloadFile(str(sys.argv[1]))
