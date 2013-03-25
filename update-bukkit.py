@@ -12,6 +12,7 @@ except ImportError:
 	from urllib.request import urlopen
 
 import hashlib
+import re
 from os import getcwd
 
 #Prints the current progress when downloading
@@ -21,33 +22,42 @@ def Progress(current, blockSize, total):
 	sys.stdout.flush()
 
 def isUpToDate(version):
-	pageSource
 	if version != "rel":
-		pageSource=urlopen("http://dl.bukkit.org/downloads/craftbukkit/list/"+version+"/").read()
+		pageSource=urlopen("http://dl.bukkit.org/downloads/craftbukkit/list/"+version+"/").read() #Downloads the correct bukkit information page
 		version = "-" + version		
 	else:
 		pageSource=urlopen("http://dl.bukkit.org/downloads/craftbukkit/list/rb/").read()
 		version = ""
-	try:
-		downloaded = open("craftbukkit"+version+".jar", r)
+	try: #tries to open the craftbukkit<version>.jar. If it exists it will continue checking to see if it is updated, if not then it will download the latest version
+		downloaded = open("craftbukkit"+version+".jar", 'r')
 	except IOError:
-		return false
-	dMD5 = hashlib.md5(downloaded.read()).hexdigest()
-	
+		return False
+	dMD5 = hashlib.md5(downloaded.read()).hexdigest() #calculates the md5sum of the current file
+	nMD5 = re.search("<dt>MD5 Checksum:</dt>.*?</dd>", pageSource, re.DOTALL) #uses regex to search the webpage for the latest md5sum
+	nMD5 = re.search("(?<= )[0-9a-z].*?\n", nMD5.group(0))
+	nMD5 = nMD5.group(0).rstrip()
+	if nMD5==dMD5: #compares the two sums. If the current file is up to date, it won't do anything else.
+		return True
+	else:
+		return False
 
 
 def downloadFile(type): #downloads the dev and beta crafbukkit versions
-	print("Downloading \"craftbukkit-"+type+".jar\" to " + getcwd())
-	urlretrieve("http://dl.bukkit.org/latest-"+type+"/craftbukkit-"+type+".jar", "craftbukkit-"+type+".jar", Progress)
-	print("\nDone!")
+	if isUpToDate(type)==False:
+		if type != "rel":
+			print("Downloading \"craftbukkit-"+type+".jar\" to " + getcwd())
+			urlretrieve("http://dl.bukkit.org/latest-"+type+"/craftbukkit-"+type+".jar", "craftbukkit-"+type+".jar", Progress)
+			print("\nDone!")
+		else:	
+			print("Downloading \"craftbukkit.jar\" to " + getcwd())
+			urlretrieve("http://dl.bukkit.org/latest-rb/craftbukkit.jar", "craftbukkit.jar", Progress)
+			print("\nDone!")
+	else:
+		print("You are already up to date!")
 
 if len(sys.argv)<2:
 	print("USAGE: update-bukkit <rel,beta,dev>")
-elif sys.argv[1]=="rel": #since the release bukkit format is very different from the other two I just hardcoded it
-	print("Downloading \"craftbukkit.jar\" to " + getcwd())
-	urlretrieve("http://dl.bukkit.org/latest-rb/craftbukkit.jar", "craftbukkit.jar", Progress)
-	print("\nDone!")
-elif sys.argv[1]=="dev" or sys.argv[1]=="beta":
+elif sys.argv[1]=="dev" or sys.argv[1]=="beta" or sys.argv[1]=="rel":
 	downloadFile(str(sys.argv[1]))
 else:
 	print("USAGE: update-bukkit <rel,beta,dev>")
