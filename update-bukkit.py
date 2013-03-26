@@ -53,4 +53,3 @@ elif sys.argv[1]=="dev" or sys.argv[1]=="beta" or sys.argv[1]=="rb":
 	downloadFile(str(sys.argv[1]))
 else:
 	print("USAGE: update-bukkit <rb,beta,dev>")
-
