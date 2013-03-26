@@ -22,12 +22,8 @@ def Progress(current, blockSize, total):
 	sys.stdout.flush()
 
 def isUpToDate(version):
-	if version != "rel":
-		pageSource=urlopen("http://dl.bukkit.org/downloads/craftbukkit/list/"+version+"/").read() #Downloads the correct bukkit information page
-		version = "-" + version		
-	else:
-		pageSource=urlopen("http://dl.bukkit.org/downloads/craftbukkit/list/rb/").read()
-		version = ""
+	pageSource=urlopen("http://dl.bukkit.org/downloads/craftbukkit/list/"+version+"/").read() #Downloads the correct bukkit information page
+	version = "-" + version		
 	try: #tries to open the craftbukkit<version>.jar. If it exists it will continue checking to see if it is updated, if not then it will download the latest version
 		downloaded = open("craftbukkit"+version+".jar", 'rb')
 	except IOError:
@@ -45,21 +41,16 @@ def isUpToDate(version):
 
 def downloadFile(type): #downloads the dev and beta crafbukkit versions
 	if isUpToDate(type)==False:
-		if type != "rel":
-			print("Downloading \"craftbukkit-"+type+".jar\" to " + getcwd())
-			urlretrieve("http://dl.bukkit.org/latest-"+type+"/craftbukkit-"+type+".jar", "craftbukkit-"+type+".jar", Progress)
-			print("\nDone!")
-		else:	
-			print("Downloading \"craftbukkit.jar\" to " + getcwd())
-			urlretrieve("http://dl.bukkit.org/latest-rb/craftbukkit.jar", "craftbukkit.jar", Progress)
-			print("\nDone!")
+		print("Downloading \"craftbukkit-"+type+".jar\" to " + getcwd())
+		urlretrieve("http://dl.bukkit.org/latest-"+type+"/craftbukkit.jar", "craftbukkit-"+type+".jar", Progress)
+		print("\nDone!")
 	else:
 		print("You are already up to date!")
 
 if len(sys.argv)<2:
-	print("USAGE: update-bukkit <rel,beta,dev>")
-elif sys.argv[1]=="dev" or sys.argv[1]=="beta" or sys.argv[1]=="rel":
+	print("USAGE: update-bukkit <rb,beta,dev>")
+elif sys.argv[1]=="dev" or sys.argv[1]=="beta" or sys.argv[1]=="rb":
 	downloadFile(str(sys.argv[1]))
 else:
-	print("USAGE: update-bukkit <rel,beta,dev>")
+	print("USAGE: update-bukkit <rb,beta,dev>")
 
