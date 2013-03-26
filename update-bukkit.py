@@ -31,9 +31,9 @@ def isUpToDate(version):
 	dMD5 = hashlib.md5(downloaded.read()).hexdigest() #calculates the md5sum of the current file
 	nMD5 = re.search(b"<dt>MD5 Checksum:</dt>.*?</dd>", pageSource, re.DOTALL) #uses regex to search the webpage for the latest md5sum
 	nMD5 = re.search(b"(?<= )[0-9a-z].*?\n", nMD5.group(0))
-	nMD5 = nMD5.group(0).rstrip()
-	print("Latest Version: "+nMD5.decode("utf-8")+"\nYour Version: "+dMD5)
-	if nMD5.decode("utf-8")==dMD5: #compares the two sums. If the current file is up to date, it won't do anything else.
+	nMD5 = nMD5.group(0).rstrip().decode("utf-8")
+	print("Latest Version: "+nMD5+"\nYour Version: "+dMD5)
+	if nMD5==dMD5: #compares the two sums. If the current file is up to date, it won't do anything else.
 		return True
 	else:
 		return False
